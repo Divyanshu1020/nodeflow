@@ -37,11 +37,11 @@ export function SignInForm(){
             {
                 email: Value.email,
                 password: Value.password,
-                callbackURL: ROUTES.WORKFLOW,
+                callbackURL: ROUTES.WORKFLOWS,
             },
             {
                 onSuccess: () => {
-                    route.push(ROUTES.WORKFLOW)
+                    route.push(ROUTES.WORKFLOWS)
                 },
                 onError: (ctx) => {
                     toast.error(ctx.error.message)

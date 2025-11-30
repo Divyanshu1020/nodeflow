@@ -21,7 +21,7 @@ export const requireNoAuth = async () => {
   });
 
   if (session) {
-    redirect(ROUTES.WORKFLOW);
+    redirect(ROUTES.WORKFLOWS);
   }
 
   return session;

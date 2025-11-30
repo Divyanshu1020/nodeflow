@@ -1,0 +1,12 @@
+import AppHeader from "@/components/app-header";
+
+const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <>
+      <AppHeader />
+      <main className="h-full">{children}</main>
+    </>
+  );
+};
+
+export default DashboardLayout;
