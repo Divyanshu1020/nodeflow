@@ -11,6 +11,7 @@
   "dependencies": {
     "@ai-sdk/google": "^2.0.44",
     "@hookform/resolvers": "^5.2.2",
+    "@paralleldrive/cuid2": "^3.0.4",
     "@polar-sh/better-auth": "^1.5.0",
     "@polar-sh/sdk": "^0.41.5",
     "@prisma/adapter-pg": "^7.0.1",
@@ -45,6 +46,7 @@
     "@trpc/client": "^11.7.2",
     "@trpc/server": "^11.7.2",
     "@trpc/tanstack-react-query": "^11.7.2",
+    "@xyflow/react": "^12.9.3",
     "ai": "^5.0.104",
     "better-auth": "^1.4.3",
     "class-variance-authority": "^0.7.1",
@@ -56,6 +58,7 @@
     "embla-carousel-react": "^8.6.0",
     "inngest": "^3.46.0",
     "input-otp": "^1.4.2",
+    "jotai": "^2.16.0",
     "lucide-react": "^0.555.0",
     "next": "16.0.5",
     "next-themes": "^0.4.6",
@@ -71,6 +74,7 @@
     "recharts": "^2.15.4",
     "server-only": "^0.0.1",
     "sonner": "^2.0.7",
+    "superjson": "^2.2.6",
     "tailwind-merge": "^3.4.0",
     "vaul": "^1.1.2",
     "zod": "^4.1.13"
