@@ -1,6 +1,8 @@
 "use client";
 
 import { ROUTES } from "@/constant";
+import { editorAtom } from "@/feature/node-store/atoms";
+import { nodeComponents } from "@/feature/react-flow/node-components";
 import {
   useUpdateWorkflowName,
   useUpdateWorkflowNode,
@@ -21,9 +23,13 @@ import {
   applyEdgeChanges,
   applyNodeChanges,
 } from "@xyflow/react";
+import "@xyflow/react/dist/style.css";
+import { useAtomValue, useSetAtom } from "jotai";
 import { SaveIcon } from "lucide-react";
+import { useTheme } from "next-themes";
 import Link from "next/link";
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { AddNodeButton } from "../add-node-button";
 import { ErrorViewer, LoadingViewer } from "../entity-componets";
 import {
   Breadcrumb,
@@ -35,11 +41,6 @@ import {
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { SidebarTrigger } from "../ui/sidebar";
-import "@xyflow/react/dist/style.css";
-import { nodeComponents } from "@/feature/react-flow/node-components";
-import { AddNodeButton } from "../add-node-button";
-import { useAtomValue, useSetAtom } from "jotai";
-import { editorAtom } from "@/feature/node-store/atoms";
 
 export function EditorLoading() {
   return <LoadingViewer message="Loading editor..." />;
@@ -177,8 +178,6 @@ export function EditorHeaderWorkflowName({
   );
 }
 
-
-
 export const Editor = ({ workflowId }: { workflowId: string }) => {
   const { data: workflow } = useWorkflowSuspense(workflowId);
 
@@ -186,24 +185,30 @@ export const Editor = ({ workflowId }: { workflowId: string }) => {
 
   const [nodes, setNodes] = useState<Node[]>(workflow?.nodes || []);
   const [edges, setEdges] = useState<Edge[]>(workflow?.edges || []);
- 
+
   const onNodesChange = useCallback(
-    (changes: NodeChange[]) => setNodes((nodesSnapshot) => applyNodeChanges(changes, nodesSnapshot)),
-    [],
+    (changes: NodeChange[]) =>
+      setNodes((nodesSnapshot) => applyNodeChanges(changes, nodesSnapshot)),
+    []
   );
   const onEdgesChange = useCallback(
-    (changes: EdgeChange[]) => setEdges((edgesSnapshot) => applyEdgeChanges(changes, edgesSnapshot)),
-    [],
+    (changes: EdgeChange[]) =>
+      setEdges((edgesSnapshot) => applyEdgeChanges(changes, edgesSnapshot)),
+    []
   );
   const onConnect = useCallback(
-    (params: Connection) => setEdges((edgesSnapshot) => addEdge(params, edgesSnapshot)),
-    [],
+    (params: Connection) =>
+      setEdges((edgesSnapshot) => addEdge(params, edgesSnapshot)),
+    []
   );
- 
+
+  const { resolvedTheme } = useTheme();
+
   return (
-   <div style={{ width: '100%', height: 'calc(100vh - 64px)' }}>
+    <div style={{ width: "100%", height: "calc(100vh - 64px)" }}>
       {" "}
       <ReactFlow
+        colorMode={resolvedTheme === "dark" ? "dark" : "light"}
         nodes={nodes}
         edges={edges}
         onNodesChange={onNodesChange}
@@ -212,12 +217,17 @@ export const Editor = ({ workflowId }: { workflowId: string }) => {
         nodeTypes={nodeComponents}
         onInit={setEditor}
         fitView
+        snapGrid={[10, 10]}
+        snapToGrid
+        panOnScroll
+        panOnDrag={false}
+        selectionOnDrag
       >
         <Controls />
         <MiniMap />
-        <Background  gap={12} size={1} />
+        <Background gap={12} size={1} />
         <Panel position="top-right">
-          <AddNodeButton/>
+          <AddNodeButton />
         </Panel>
       </ReactFlow>
     </div>

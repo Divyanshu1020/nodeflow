@@ -1,13 +1,19 @@
 import type { ComponentProps } from "react";
 
 import { cn } from "@/lib/utils";
+import { NodeStatus } from "./node-status-indicator";
+import { XCircleIcon } from "lucide-react";
 
-export function BaseNode({ className, ...props }: ComponentProps<"div">) {
+export type BaseNodeProps = ComponentProps<"div"> & {
+  status?: NodeStatus;
+};
+
+export function BaseNode({ className, status, ...props }: BaseNodeProps) {
   return (
     <div
       className={cn(
-        "bg-card text-card-foreground relative rounded-md border",
-        "hover:ring-1",
+        "bg-card text-card-foreground relative rounded-sm border",
+        "hover:bg-accent",
         // React Flow displays node elements inside of a `NodeWrapper` component,
         // which compiles down to a div with the class `react-flow__node`.
         // When a node is selected, the class `selected` is added to the
@@ -19,7 +25,12 @@ export function BaseNode({ className, ...props }: ComponentProps<"div">) {
       )}
       tabIndex={0}
       {...props}
-    />
+    >
+      {props.children}
+      {status === "error" && (
+        <XCircleIcon className="absolute right-0.5 bottom-0.5 size-2 text-red-700 stroke-3" />
+      )}  
+    </div>
   );
 }
 

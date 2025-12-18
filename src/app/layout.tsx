@@ -1,3 +1,4 @@
+import { ThemeProvider } from "@/components/theme/theme-provider";
 import { TRPCReactProvider } from "@/trpc/client";
 import { Provider } from "jotai";
 import type { Metadata } from "next";
@@ -32,10 +33,17 @@ export default function RootLayout({
       >
         <TRPCReactProvider>
           <NuqsAdapter>
-            <Provider>
-              {children}
-              <Toaster />
-            </Provider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              <Provider>
+                {children}
+                <Toaster />
+              </Provider>
+            </ThemeProvider>
           </NuqsAdapter>
         </TRPCReactProvider>
       </body>

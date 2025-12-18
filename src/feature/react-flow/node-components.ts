@@ -1,6 +1,6 @@
-import { HttpRequestNode } from "@/components/execution/http-request/http-request";
 import { InitialNode } from "@/components/initial-node";
-import { ManualTriggerNode } from "@/components/trigger/trigger/trigger";
+import { HttpRequestNode } from "@/components/node/execution/http-request/http-request";
+import { ManualTriggerNode } from "@/components/node/trigger/trigger/trigger";
 import { NodeType } from "@/generated/prisma/enums";
 import { NodeTypes } from "@xyflow/react";
 

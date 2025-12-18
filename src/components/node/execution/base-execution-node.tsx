@@ -4,16 +4,17 @@ import { NodeProps, Position, useReactFlow } from "@xyflow/react";
 import { LucideIcon } from "lucide-react";
 import Image from "next/image";
 import { memo } from "react";
-import { BaseHandle } from "../base-handle";
-import { BaseNode, BaseNodeContent } from "../base-node";
-import { WorkflowNode } from "../workflow-node";
+import { BaseHandle } from "../../base-handle";
+import { BaseNode, BaseNodeContent } from "../../base-node";
+import { WorkflowNode } from "../../workflow-node";
+import { NodeStatus } from "@/components/node-status-indicator";
 
 interface BaseExecutionNodeProps extends NodeProps {
   Icon: LucideIcon | string;
   name: string;
   description?: string;
   children?: React.ReactNode;
-  //  status? : NodeStatus;
+   status? : NodeStatus;
   onSetting?: () => void;
   onDoubleTap?: () => void;
 }
@@ -26,9 +27,10 @@ export const BaseExecutionNode = memo(
     description,
     children,
     onSetting,
+    status,
     onDoubleTap,
   }: BaseExecutionNodeProps) => {
-    const {setNodes , setEdges} = useReactFlow()
+    const { setNodes, setEdges } = useReactFlow();
 
     const handleDelete = () => {
       setNodes((nodes) => nodes.filter((node) => node.id !== id));
@@ -41,7 +43,7 @@ export const BaseExecutionNode = memo(
         onDelete={handleDelete}
         onSettings={onSetting}
       >
-        <BaseNode>
+        <BaseNode status={status} onDoubleClick={onDoubleTap}>
           <BaseNodeContent>
             {typeof Icon === "string" ? (
               <Image src={Icon} alt={name} width={16} height={16} />
