@@ -91,3 +91,18 @@ export const useUpdateWorkflowNode = () => {
   );
 };
 
+export const useExecuteWorkflow = () => {
+  const trpc = useTRPC();
+  const queryClient = useQueryClient();
+  return useMutation(
+    trpc.workflow.execute.mutationOptions({
+      onSuccess: (data) => {
+        toast.success(`${data.name} Workflow executed successfully `);
+        
+      },
+      onError: (error) => {
+        toast.error(`Error executing workflow: ${error.message}`);
+      },
+    })
+  );
+};

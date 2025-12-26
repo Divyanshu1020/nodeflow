@@ -5,6 +5,7 @@ import { BaseExecutionNode } from "../base-execution-node";
 import { HttpRequestDialog } from "./dialog";
 
 type HttpRequestNodedata = {
+  variableName?: string;
   endPoint?: string;
   method?: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
   body?: string;
@@ -15,9 +16,11 @@ type HttpRequestNodeProps = Node<HttpRequestNodedata>;
 
 function HttpRequestNodeComponent(props: NodeProps<HttpRequestNodeProps>) {
   const { setNodes } = useReactFlow();
+
   const [open, setOpen] = useState(false);
   const nodeData = props.data as HttpRequestNodedata;
   const handleSave = (data: {
+    variableName?: string;
     endPoint?: string;
     method?: string;
     body?: string;
@@ -34,6 +37,7 @@ function HttpRequestNodeComponent(props: NodeProps<HttpRequestNodeProps>) {
               endPoint: data.endPoint,
               method: data.method,
               body: data.body,
+              variableName: data.variableName,
             },
           };
         }
@@ -44,7 +48,7 @@ function HttpRequestNodeComponent(props: NodeProps<HttpRequestNodeProps>) {
     setOpen(false);
   };
   const description = nodeData?.endPoint
-    ? `${nodeData.method || "GET"} : ${nodeData.endPoint}`
+    ? `Name: ${nodeData.variableName}\n     ${nodeData.method || "GET"} : ${nodeData.endPoint}`
     : "Not Configured";
   return (
     <>
@@ -53,6 +57,7 @@ function HttpRequestNodeComponent(props: NodeProps<HttpRequestNodeProps>) {
         defaultEndPoint={nodeData.endPoint}
         defaultMethod={nodeData.method}
         defaultBody={nodeData.body}
+        defaultVariableName={props.id}
         open={open}
         onOpenChange={setOpen}
       />

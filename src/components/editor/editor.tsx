@@ -8,6 +8,7 @@ import {
   useUpdateWorkflowNode,
   useWorkflowSuspense,
 } from "@/feature/workflow/hooks/use-workflows-suspense";
+import { NodeType } from "@/generated/prisma/enums";
 import {
   Background,
   Connection,
@@ -28,7 +29,13 @@ import { useAtomValue, useSetAtom } from "jotai";
 import { SaveIcon } from "lucide-react";
 import { useTheme } from "next-themes";
 import Link from "next/link";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { AddNodeButton } from "../add-node-button";
 import { ErrorViewer, LoadingViewer } from "../entity-componets";
 import {
@@ -41,6 +48,7 @@ import {
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { SidebarTrigger } from "../ui/sidebar";
+import { ExecuteWorkflowButton } from "./execute-workflow-button";
 
 export function EditorLoading() {
   return <LoadingViewer message="Loading editor..." />;
@@ -202,7 +210,17 @@ export const Editor = ({ workflowId }: { workflowId: string }) => {
     []
   );
 
+  const onEdgeClick = useCallback((event: React.MouseEvent, edge: Edge) => {
+    event.stopPropagation();
+    setEdges((eds) => eds.filter((e) => e.id !== edge.id));
+  }, []);
+
   const { resolvedTheme } = useTheme();
+
+  const hasManualTriggerNode = useMemo(
+    () => nodes.some((node) => node.type === NodeType.MANUAL_TRIGGER),
+    [nodes]
+  );
 
   return (
     <div style={{ width: "100%", height: "calc(100vh - 64px)" }}>
@@ -216,6 +234,7 @@ export const Editor = ({ workflowId }: { workflowId: string }) => {
         onConnect={onConnect}
         nodeTypes={nodeComponents}
         onInit={setEditor}
+        onEdgeClick={onEdgeClick}
         fitView
         snapGrid={[10, 10]}
         snapToGrid
@@ -229,6 +248,11 @@ export const Editor = ({ workflowId }: { workflowId: string }) => {
         <Panel position="top-right">
           <AddNodeButton />
         </Panel>
+        {hasManualTriggerNode && (
+          <Panel position="top-center">
+            <ExecuteWorkflowButton workflowId={workflowId} />
+          </Panel>
+        )}
       </ReactFlow>
     </div>
   );
