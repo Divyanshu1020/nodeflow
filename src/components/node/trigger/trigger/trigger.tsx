@@ -7,7 +7,6 @@ import { ManualTriggerDialog } from "./dialog";
 function ManualTriggerComponent(props: NodeProps) {
   const [open, setOpen] = useState(false);
 
-  
   return (
     <>
       <ManualTriggerDialog open={open} onOpenChange={setOpen} />
@@ -15,7 +14,7 @@ function ManualTriggerComponent(props: NodeProps) {
         {...props}
         name="Manual Trigger"
         Icon={MousePointer}
-        status="error"
+        status="initial"
         // description={description}
         onDoubleTap={() => setOpen(true)}
         onSetting={() => setOpen(true)}

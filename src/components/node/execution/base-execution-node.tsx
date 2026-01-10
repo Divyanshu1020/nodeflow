@@ -7,7 +7,7 @@ import { memo } from "react";
 import { BaseHandle } from "../../base-handle";
 import { BaseNode, BaseNodeContent } from "../../base-node";
 import { WorkflowNode } from "../../workflow-node";
-import { NodeStatus } from "@/components/node-status-indicator";
+import { NodeStatus, NodeStatusIndicator } from "@/components/node-status-indicator";
 
 interface BaseExecutionNodeProps extends NodeProps {
   Icon: LucideIcon | string;
@@ -43,6 +43,11 @@ export const BaseExecutionNode = memo(
         onDelete={handleDelete}
         onSettings={onSetting}
       >
+        <NodeStatusIndicator
+          status={status}
+          variant="border"
+          // className="rounded-l-2xl"
+        >
         <BaseNode status={status} onDoubleClick={onDoubleTap}>
           <BaseNodeContent>
             {typeof Icon === "string" ? (
@@ -55,6 +60,7 @@ export const BaseExecutionNode = memo(
             <BaseHandle id="source-1" type="source" position={Position.Right} />
           </BaseNodeContent>
         </BaseNode>
+        </NodeStatusIndicator>
       </WorkflowNode>
     );
   }

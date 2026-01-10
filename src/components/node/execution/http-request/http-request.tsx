@@ -1,8 +1,11 @@
+import { useNodeStatus } from "@/feature/node/hooks/use-node-status";
 import { Node, NodeProps, useReactFlow } from "@xyflow/react";
 import { GlobeIcon } from "lucide-react";
 import { memo, useState } from "react";
 import { BaseExecutionNode } from "../base-execution-node";
+import { fetchHttpRequestRealtimeToken } from "./actions";
 import { HttpRequestDialog } from "./dialog";
+import { NodeStatus } from "@/components/node-status-indicator";
 
 type HttpRequestNodedata = {
   variableName?: string;
@@ -17,6 +20,14 @@ type HttpRequestNodeProps = Node<HttpRequestNodedata>;
 function HttpRequestNodeComponent(props: NodeProps<HttpRequestNodeProps>) {
   const { setNodes } = useReactFlow();
 
+  const nodeStatus =
+    (useNodeStatus({
+      nodeId: props.id,
+      channerl: "http-request-channel",
+      topic: "status",
+      refreshToken: fetchHttpRequestRealtimeToken,
+    }) as NodeStatus | null) ?? undefined;
+
   const [open, setOpen] = useState(false);
   const nodeData = props.data as HttpRequestNodedata;
   const handleSave = (data: {
@@ -27,7 +38,6 @@ function HttpRequestNodeComponent(props: NodeProps<HttpRequestNodeProps>) {
   }) => {
     setNodes((nodes) => {
       return nodes.map((node) => {
-
         if (node.id === props.id) {
           // console.log("nodeId", node.id, "nodeDataID", props.id);
           return {
@@ -48,7 +58,9 @@ function HttpRequestNodeComponent(props: NodeProps<HttpRequestNodeProps>) {
     setOpen(false);
   };
   const description = nodeData?.endPoint
-    ? `Name: ${nodeData.variableName}\n     ${nodeData.method || "GET"} : ${nodeData.endPoint}`
+    ? `Name: ${nodeData.variableName}\n     ${nodeData.method || "GET"} : ${
+        nodeData.endPoint
+      }`
     : "Not Configured";
   return (
     <>
@@ -68,7 +80,7 @@ function HttpRequestNodeComponent(props: NodeProps<HttpRequestNodeProps>) {
         {...props}
         onDoubleTap={() => setOpen(true)}
         onSetting={() => setOpen(true)}
-        status={nodeData?.endPoint ? "success" : "success"}
+        status={nodeStatus}
       ></BaseExecutionNode>
     </>
   );
