@@ -9,9 +9,9 @@ export function ExecuteWorkflowButton({ workflowId }: { workflowId: string }) {
         executeWorkflow.mutate({ id: workflowId });
     };
   return (
-    <Button size="lg" onClick={handleExecuteWorkflow} disabled={false}>
+    <Button size="lg" onClick={handleExecuteWorkflow} disabled={executeWorkflow.isPending} className={`w-fit ${executeWorkflow.isPending ? "loading" : ""}`}>
       <FlaskConicalIcon className="size-4" />
-      Execute
+      {executeWorkflow.isPending ? "Executing..." : "Execute"}
     </Button>
   );
 }

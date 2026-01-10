@@ -42,6 +42,11 @@ interface PROPS {
   defaultVariableName?: string;
 }
 
+const BODY_PLACEHOLDER = 
+`{
+  "id": "{{httpRequest.data.id}}"
+}`;
+
 const formSchema = z.object({
   endPoint: z.string().url({ message: "Please enter a valid URL" }),
   method: z.enum(["GET", "POST", "PUT", "DELETE", "PATCH"]),
@@ -182,11 +187,7 @@ export const HttpRequestDialog = ({
                     <FormControl>
                       <Textarea
                         className="min-h-[120px] font-mono text-sm"
-                        placeholder={`
-                          {
-                            "id": "{{httpRequest.data.id}}"
-                          }
-                        `}
+                        placeholder={BODY_PLACEHOLDER}
                         {...field}
                       />
                     </FormControl>

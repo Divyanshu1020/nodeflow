@@ -85,9 +85,9 @@ export function EditorHeaderSaveButton({ workflowId }: { workflowId: string }) {
   };
   return (
     <div className="ml-auto">
-      <Button size="sm" onClick={handleSave} disabled={false}>
+      <Button className={`w-fit ${updateWorkflowNode.isPending ? "loading" : ""}`} size="sm" onClick={handleSave} disabled={updateWorkflowNode.isPending}>
         <SaveIcon className="size-4" />
-        Save
+        {updateWorkflowNode.isPending ? "Saving..." : "Save"}
       </Button>
     </div>
   );
