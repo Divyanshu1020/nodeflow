@@ -24,68 +24,86 @@ export const httpRequestExecutor: NodeExecutor<HttpRequestData> = async ({
   publish,
 }) => {
   // console.log("httpRequestExecutor data", data);
-    await publish(httpRequestChannel().status({
+  await publish(
+    httpRequestChannel().status({
       nodeId,
       status: "loading",
-    }))
+    })
+  );
 
   if (!data.endPoint) {
-    await publish(httpRequestChannel().status({
+    await publish(
+      httpRequestChannel().status({
         nodeId,
         status: "error",
-      }))
+      })
+    );
     throw new NonRetriableError("HTTP Request node requires an endpoint");
   }
 
   if (!data.variableName) {
-    await publish(httpRequestChannel().status({
-      nodeId,
-      status: "error",
-    }))
+    await publish(
+      httpRequestChannel().status({
+        nodeId,
+        status: "error",
+      })
+    );
     throw new NonRetriableError("HTTP Request node requires a variable name");
   }
 
-  const result = await step.run("http-request", async () => {
-    const endPoint = Handlebars.compile(data.endPoint)(context);
-    const method = data.method || "GET";
-    const options: KyOptions = {
-      method,
-    };
-    if (["POST", "PUT", "PATCH"].includes(method)) {
-      if (data.body) {
-        const resloved = Handlebars.compile(data.body || "{}")(context);
-        JSON.parse(resloved);
-        options.body = resloved;
-        options.headers = {
-          "Content-Type": "application/json",
-        };
+  try {
+    const result = await step.run("http-request", async () => {
+      const endPoint = Handlebars.compile(data.endPoint)(context);
+      const method = data.method || "GET";
+      const options: KyOptions = {
+        method,
+      };
+      if (["POST", "PUT", "PATCH"].includes(method)) {
+        if (data.body) {
+          const resloved = Handlebars.compile(data.body || "{}")(context);
+          JSON.parse(resloved);
+          options.body = resloved;
+          options.headers = {
+            "Content-Type": "application/json",
+          };
+        }
       }
-    }
-    const response = await ky(endPoint, options);
-    const contentType = response.headers.get("content-type");
-    let responseData;
-    if (contentType?.includes("application/json")) {
-      responseData = await response.json();
-    } else {
-      responseData = await response.text();
-    }
+      const response = await ky(endPoint, options);
+      const contentType = response.headers.get("content-type");
+      let responseData;
+      if (contentType?.includes("application/json")) {
+        responseData = await response.json();
+      } else {
+        responseData = await response.text();
+      }
 
-    return {
-      ...context,
-      [data.variableName]: {
-        httpResponse: {
-          status: response.status,
-          statusText: response.statusText,
-          headers: response.headers,
-          data: responseData,
+      return {
+        ...context,
+        [data.variableName]: {
+          httpResponse: {
+            status: response.status,
+            statusText: response.statusText,
+            headers: response.headers,
+            data: responseData,
+          },
         },
-      },
-    };
-  });
+      };
+    });
 
-  await publish(httpRequestChannel().status({
-    nodeId,
-    status: "success",
-  }))
-  return result;
+    await publish(
+      httpRequestChannel().status({
+        nodeId,
+        status: "success",
+      })
+    );
+    return result;
+  } catch (error) {
+    await publish(
+      httpRequestChannel().status({
+        nodeId,
+        status: "error",
+      })
+    );
+    throw error;
+  }
 };

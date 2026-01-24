@@ -4,10 +4,11 @@ import { NonRetriableError } from "inngest";
 import { httpRequestChannel } from "./channels/http-request";
 import { inngest } from "./client";
 import { topologicalSort } from "./utils";
+import { manualTriggerChannel } from "./channels/manual-trigger";
 
 export const executeWorkflow = inngest.createFunction(
   { id: "execute-workflow" },
-  { event: "workflow/execute", channels: [httpRequestChannel()] },
+  { event: "workflow/execute", channels: [httpRequestChannel(), manualTriggerChannel()] },
   async ({ event, step, publish }) => {
     const workflowId = event.data.workflowId;
 
